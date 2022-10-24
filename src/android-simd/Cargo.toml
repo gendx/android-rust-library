@@ -1,0 +1,17 @@
+[package]
+name = "simd"
+version = "0.1.0"
+edition = "2021"
+
+[target.'cfg(target_os="android")'.dependencies]
+jni = { version = "0.20", default-features = false }
+
+[lib]
+crate-type = ["dylib"]
+
+# Various optimizations of the final binary's size. Interestingly,
+# opt-level = 'z' doesn't actually decrease the size in this case.
+[profile.release]
+codegen-units = 1
+lto = true
+panic = "abort"
