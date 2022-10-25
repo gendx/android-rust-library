@@ -125,6 +125,7 @@ ENV PATH=${PATH}:/home/dev/.cargo/bin
 USER root
 
 COPY \
+    scripts/build-application.sh \
     scripts/strip-rust.sh \
     scripts/script-rust-default.sh \
     scripts/script-rust-default-nostrip.sh \
@@ -139,6 +140,7 @@ COPY \
     scripts/launch-app-release.sh \
     /home/dev/
 RUN chmod 555 \
+    /home/dev/build-application.sh \
     /home/dev/strip-rust.sh \
     /home/dev/script-rust-default.sh \
     /home/dev/script-rust-default-nostrip.sh \

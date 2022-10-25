@@ -7,3 +7,22 @@ jobs:
       - uses: actions/checkout@v2
       - name: Docker build
         run: ./docker-build.sh
+      - name: Build Android application
+        run: |
+          docker run \
+            --rm \
+            --cap-drop=all \
+            --security-opt no-new-privileges \
+            --read-only \
+            -u dev \
+            --memory=3072m \
+            --memory-swap=3072m \
+            --memory-swappiness=0 \
+            --env USER=dev \
+            --tmpfs /tmp:size=16m \
+            --tmpfs /home/dev/build:exec,size=512m \
+            --tmpfs /home/dev/.gradle:exec,size=512m \
+            --tmpfs /home/dev/.android:size=1m \
+            --tmpfs /home/dev/.cargo/registry:size=16m \
+            --entrypoint /home/dev/build-application.sh \
+            android-rust-simd
