@@ -125,18 +125,18 @@ ENV PATH=${PATH}:/home/dev/.cargo/bin
 USER root
 
 COPY \
-    strip-rust.sh \
-    script-rust-default.sh \
-    script-rust-default-nostrip.sh \
-    script-rust-nightly.sh \
-    script-rust-nightly-nostrip.sh \
-    script-gradle.sh \
-    script-java.sh \
-    script-java-incorrect-arm64.sh \
-    script-java-incorrect-x86_64.sh \
-    emulator.sh \
-    launch-app-debug.sh \
-    launch-app-release.sh \
+    scripts/strip-rust.sh \
+    scripts/script-rust-default.sh \
+    scripts/script-rust-default-nostrip.sh \
+    scripts/script-rust-nightly.sh \
+    scripts/script-rust-nightly-nostrip.sh \
+    scripts/script-gradle.sh \
+    scripts/script-java.sh \
+    scripts/script-java-incorrect-arm64.sh \
+    scripts/script-java-incorrect-x86_64.sh \
+    scripts/emulator.sh \
+    scripts/launch-app-debug.sh \
+    scripts/launch-app-release.sh \
     /home/dev/
 RUN chmod 555 \
     /home/dev/strip-rust.sh \
