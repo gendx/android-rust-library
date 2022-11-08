@@ -6,8 +6,8 @@ docker run \
     --security-opt no-new-privileges \
     --read-only \
     -u dev \
-    --memory=3072m \
-    --memory-swap=3072m \
+    --memory=3g \
+    --memory-swap=3g \
     --memory-swappiness=0 \
     --env USER=dev \
     --tmpfs /tmp:size=16m \
