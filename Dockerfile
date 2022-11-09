@@ -5,6 +5,10 @@ RUN apt-get update \
         wget \
         unzip \
         build-essential \
+        python3 \
+        curl \
+        cmake \
+        git \
         openjdk-11-jdk-headless \
         libgl1-mesa-dri \
         libgl1-mesa-glx \
@@ -32,7 +36,7 @@ WORKDIR "/home/dev"
 ENV GRADLE_ROOT=/home/dev/opt/gradle
 
 RUN mkdir -p ${GRADLE_ROOT}
-RUN wget https://services.gradle.org/distributions/gradle-7.5.1-bin.zip -O gradle-7.5.1-bin.zip \
+RUN wget -nv https://services.gradle.org/distributions/gradle-7.5.1-bin.zip -O gradle-7.5.1-bin.zip \
     && sha256sum gradle-7.5.1-bin.zip \
     && echo "f6b8596b10cce501591e92f229816aa4046424f3b24d771751b06779d58c8ec4  gradle-7.5.1-bin.zip" | sha256sum -c - \
     && unzip gradle-7.5.1-bin.zip -d ${GRADLE_ROOT} \
@@ -45,7 +49,7 @@ ENV PATH=${PATH}:${GRADLE_ROOT}/gradle-7.5.1/bin
 ENV ANDROID_HOME=/home/dev/opt/android-sdk
 
 RUN mkdir -p ${ANDROID_HOME}
-RUN wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip \
+RUN wget -nv https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip \
         -O ${HOME}/commandlinetools-linux-8512546_latest.zip \
     && sha256sum commandlinetools-linux-8512546_latest.zip \
     && echo "2ccbda4302db862a28ada25aa7425d99dce9462046003c1714b059b5c47970d8 commandlinetools-linux-8512546_latest.zip" | sha256sum -c - \
@@ -81,7 +85,7 @@ RUN cd ${HOME}/opt/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x
 #
 # See https://developer.android.com/studio/releases/emulator#31-3-12.
 RUN rm -R ${ANDROID_HOME}/emulator \
-    && wget https://redirector.gvt1.com/edgedl/android/repository/emulator-linux_x64-9058569.zip \
+    && wget -nv https://redirector.gvt1.com/edgedl/android/repository/emulator-linux_x64-9058569.zip \
         -O ${HOME}/emulator-linux_x64-9058569.zip \
     && sha256sum emulator-linux_x64-9058569.zip \
     && echo "5b06dae2b8c79b0a39456c3b4d31cf1895571bbf9763cc8ba84c8fdae15673e8 emulator-linux_x64-9058569.zip" | sha256sum -c - \
@@ -102,7 +106,7 @@ RUN avdmanager create avd \
 # Install Rust toolchain.
 ENV NDK_HOME=${ANDROID_HOME}/ndk/25.1.8937393
 
-RUN wget https://sh.rustup.rs -O rustup.sh \
+RUN wget -nv https://sh.rustup.rs -O rustup.sh \
     && sha256sum rustup.sh \
     && echo "173f4881e2de99ba9ad1acb59e65be01b2a44979d83b6ec648d0d22f8654cbce  rustup.sh" | sha256sum -c - \
     && sh rustup.sh -y \
@@ -118,7 +122,9 @@ RUN wget https://sh.rustup.rs -O rustup.sh \
         aarch64-linux-android \
         armv7-linux-androideabi \
         i686-linux-android \
-        x86_64-linux-android
+        x86_64-linux-android \
+    && mkdir -p ${HOME}/rustup \
+    && mv ${HOME}/.rustup/toolchains ${HOME}/rustup/toolchains
 
 ENV PATH=${PATH}:/home/dev/.cargo/bin
 
@@ -126,11 +132,19 @@ USER root
 
 COPY \
     scripts/build-application.sh \
+    scripts/build-application-stage1.sh \
+    scripts/setup.sh \
+    scripts/clone-rustlang-head.sh \
+    scripts/clone-rustlang-1.67.0-1286ee23e.sh \
+    scripts/stage0.sh \
+    scripts/stage1.sh \
     scripts/strip-rust.sh \
     scripts/script-rust-default.sh \
     scripts/script-rust-default-nostrip.sh \
     scripts/script-rust-nightly.sh \
     scripts/script-rust-nightly-nostrip.sh \
+    scripts/script-rust-stage1.sh \
+    scripts/script-rust-stage1-nostrip.sh \
     scripts/script-gradle.sh \
     scripts/script-java.sh \
     scripts/script-java-incorrect-arm64.sh \
@@ -138,25 +152,38 @@ COPY \
     scripts/emulator.sh \
     scripts/launch-app-debug.sh \
     scripts/launch-app-release.sh \
+    scripts/flamedisk.sh \
     /home/dev/
 RUN chmod 555 \
     /home/dev/build-application.sh \
+    /home/dev/build-application-stage1.sh \
+    /home/dev/setup.sh \
+    /home/dev/clone-rustlang-head.sh \
+    /home/dev/clone-rustlang-1.67.0-1286ee23e.sh \
+    /home/dev/stage0.sh \
+    /home/dev/stage1.sh \
     /home/dev/strip-rust.sh \
     /home/dev/script-rust-default.sh \
     /home/dev/script-rust-default-nostrip.sh \
     /home/dev/script-rust-nightly.sh \
     /home/dev/script-rust-nightly-nostrip.sh \
+    /home/dev/script-rust-stage1.sh \
+    /home/dev/script-rust-stage1-nostrip.sh \
     /home/dev/script-gradle.sh \
     /home/dev/script-java.sh \
     /home/dev/script-java-incorrect-arm64.sh \
     /home/dev/script-java-incorrect-x86_64.sh \
     /home/dev/emulator.sh \
     /home/dev/launch-app-debug.sh \
-    /home/dev/launch-app-release.sh
+    /home/dev/launch-app-release.sh \
+    /home/dev/flamedisk.sh
 
 COPY --chown=1000:1000 cargo-config.toml /home/dev/.cargo/config
+COPY --chown=1000:1000 rustbuild-config.toml /home/dev/
+COPY --chown=1000:1000 stdarch.patch /home/dev/
 
 COPY --chown=1000:1000 src /home/dev/src
+COPY --chown=1000:1000 tools /home/dev/tools
 
 USER dev
 

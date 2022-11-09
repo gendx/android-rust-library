@@ -5,9 +5,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Get some system information
+        run: |
+          id;
+          df;
+          free;
+          nproc
       - name: Docker build
         run: ./docker-build.sh
-      - name: Build Android application
+      - name: Build Android application (nightly Rust)
         run: |
           docker run \
             --rm \
@@ -24,5 +30,30 @@ jobs:
             --tmpfs /home/dev/.gradle:exec,size=512m \
             --tmpfs /home/dev/.android:size=1m \
             --tmpfs /home/dev/.cargo/registry:size=16m \
+            --tmpfs /home/dev/.rustup/toolchains:exec,size=1m \
             --entrypoint /home/dev/build-application.sh \
+            android-rust-simd
+      - name: Build Android application (stage 1 Rust)
+        run: |
+          mkdir -p rustc-build;
+          chmod 777 rustc-build;
+          PWD=`pwd`;
+          docker run \
+            --rm \
+            --cap-drop=all \
+            --security-opt no-new-privileges \
+            --read-only \
+            -u dev \
+            --memory=5g \
+            --memory-swap=5g \
+            --memory-swappiness=0 \
+            --env USER=dev \
+            --tmpfs /tmp:size=256m \
+            --tmpfs /home/dev/build:exec,size=512m \
+            --tmpfs /home/dev/.gradle:exec,size=512m \
+            --tmpfs /home/dev/.android:size=1m \
+            --tmpfs /home/dev/.cargo/registry:size=512m \
+            --tmpfs /home/dev/.rustup/toolchains:exec,size=1m \
+            --volume ${PWD}/rustc-build:/home/dev/rustc-build \
+            --entrypoint /home/dev/build-application-stage1.sh \
             android-rust-simd

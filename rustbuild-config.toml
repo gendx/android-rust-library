@@ -1,0 +1,15 @@
+# Includes one of the default files in src/bootstrap/defaults
+profile = "library"
+changelog-seen = 2
+
+[target.aarch64-linux-android]
+android-ndk = "/home/dev/opt/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64"
+
+[target.armv7-linux-androideabi]
+android-ndk = "/home/dev/opt/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64"
+
+[target.i686-linux-android]
+android-ndk = "/home/dev/opt/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64"
+
+[target.x86_64-linux-android]
+android-ndk = "/home/dev/opt/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64"

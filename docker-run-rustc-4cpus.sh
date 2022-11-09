@@ -1,4 +1,9 @@
 #!/bin/sh
+
+mkdir -p rustc-build
+chown 1000:1000 rustc-build
+PWD=`pwd`
+
 docker run \
     --rm \
     -it \
@@ -6,15 +11,13 @@ docker run \
     --security-opt no-new-privileges \
     --read-only \
     -u dev \
+    --cpus 4 \
     --memory=3g \
     --memory-swap=3g \
     --memory-swappiness=0 \
     --env USER=dev \
-    --tmpfs /tmp:size=16m \
-    --tmpfs /home/dev/build:exec,size=512m \
-    --tmpfs /home/dev/.gradle:exec,size=512m \
-    --tmpfs /home/dev/.android:size=1m \
-    --tmpfs /home/dev/.cargo/registry:size=16m \
+    --tmpfs /tmp:size=256m \
+    --tmpfs /home/dev/.cargo/registry:size=512m \
     --tmpfs /home/dev/.rustup/toolchains:exec,size=1m \
-    --device /dev/bus/usb \
+    --volume ${PWD}/rustc-build:/home/dev/rustc-build \
     android-rust-simd

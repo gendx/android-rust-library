@@ -1,10 +1,17 @@
-#![cfg_attr(test, feature(never_type))]
+#![cfg_attr(test, feature(never_type, test))]
+#![cfg_attr(target_arch = "arm", feature(stdsimd))]
+#![feature(let_chains, slice_as_chunks)]
 
 mod cpu;
 mod logger;
+mod pmul;
 
-use cpu::get_arch_name;
+#[cfg(test)]
+extern crate test;
+
+use cpu::{get_arch_name, print_cpu_features};
 use logger::Logger;
+use pmul::{pmul, pmul_cheat, pmul_nosimd};
 
 #[cfg(target_os = "android")]
 #[allow(non_snake_case)]
@@ -34,7 +41,7 @@ pub mod android {
 }
 
 #[cfg(test)]
-pub mod test {
+pub mod tests {
     use super::hello;
     use crate::logger::PrintlnLogger;
 
@@ -52,6 +59,35 @@ pub fn hello<L: Logger>(logger: &L) -> String {
 
     logger.d("Hello Rust world").expect("Failed to log");
     logger.d(&your_arch).expect("Failed to log");
+
+    print_cpu_features(logger).expect("Failed to log");
+
+    logger
+        .d("Testing polynomial multiplication instructions")
+        .expect("Failed to log");
+    let a: u64 = 0x1234567890abcdef;
+    let b: u64 = 0xfedcba0987654321;
+
+    let (product, strategy) = pmul_nosimd(a, b);
+    logger
+        .d(format!(
+            "pmul_nosimd({a:016x?}, {b:016x?}) = {product:032x?} [strategy = {strategy}]"
+        ))
+        .expect("Failed to log");
+
+    let (product, strategy) = pmul_cheat(a, b);
+    logger
+        .d(format!(
+            "pmul_cheat({a:016x?}, {b:016x?}) = {product:032x?} [strategy = {strategy}]"
+        ))
+        .expect("Failed to log");
+
+    let (product, strategy) = pmul(a, b);
+    logger
+        .d(format!(
+            "pmul({a:016x?}, {b:016x?}) = {product:032x?} [strategy = {strategy}]"
+        ))
+        .expect("Failed to log");
 
     your_arch
 }
