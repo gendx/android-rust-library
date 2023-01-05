@@ -1,0 +1,91 @@
+diff --git a/horcrux/src/gf2n.rs b/horcrux/src/gf2n.rs
+index 5bc0221..501d455 100644
+--- a/horcrux/src/gf2n.rs
++++ b/horcrux/src/gf2n.rs
+@@ -294,13 +294,9 @@ fn mul_clmul_u64<const NWORDS: usize, const A: usize, const B: usize, const C: u
+     GF2n::<u64, NWORDS, A, B, C>::propagate_carries(words, carry)
+ }
+ 
+-#[cfg(all(
+-    feature = "clmul",
+-    target_arch = "aarch64",
+-    target_feature = "neon",
+-    target_feature = "aes"
+-))]
+-fn mul_clmul_u64<const NWORDS: usize, const A: usize, const B: usize, const C: usize>(
++#[cfg(all(feature = "clmul", target_arch = "aarch64"))]
++#[target_feature(enable = "neon", enable = "aes")]
++unsafe fn mul_clmul_u64<const NWORDS: usize, const A: usize, const B: usize, const C: usize>(
+     x: &GF2n<u64, NWORDS, A, B, C>,
+     y: &GF2n<u64, NWORDS, A, B, C>,
+ ) -> GF2n<u64, NWORDS, A, B, C> {
+@@ -316,7 +312,7 @@ fn mul_clmul_u64<const NWORDS: usize, const A: usize, const B: usize, const C: u
+         for j in 0..NWORDS {
+             let yj = y.words[j];
+             // Safety: target_feature's "neon" and "aes" are available in this function.
+-            let clmul: u128 = unsafe { vmull_p64(xi, yj) };
++            let clmul: u128 = vmull_p64(xi, yj);
+             let low: u64 = clmul as u64;
+             let high: u64 = (clmul >> 64) as u64;
+ 
+@@ -540,12 +536,7 @@ impl<W: Word, const NWORDS: usize, const A: usize, const B: usize, const C: usiz
+             target_feature = "sse2",
+             target_feature = "pclmulqdq"
+         ),
+-        all(
+-            feature = "clmul",
+-            target_arch = "aarch64",
+-            target_feature = "neon",
+-            target_feature = "aes"
+-        )
++        all(feature = "clmul", target_arch = "aarch64")
+     ))]
+     fn propagate_carries(mut words: [W; NWORDS], carry: [W; NWORDS]) -> Self {
+         if NWORDS == 1 {
+@@ -672,19 +663,11 @@ impl<W: Word, const NWORDS: usize, const A: usize, const B: usize, const C: usiz
+     type Output = Self;
+ 
+     fn mul(self, other: &Self) -> Self {
+-        #[cfg(any(
+-            all(
+-                feature = "clmul",
+-                target_arch = "x86_64",
+-                target_feature = "sse2",
+-                target_feature = "pclmulqdq"
+-            ),
+-            all(
+-                feature = "clmul",
+-                target_arch = "aarch64",
+-                target_feature = "neon",
+-                target_feature = "aes"
+-            )
++        #[cfg(all(
++            feature = "clmul",
++            target_arch = "x86_64",
++            target_feature = "sse2",
++            target_feature = "pclmulqdq"
+         ))]
+         if W::NBITS == 64 {
+             // Safety: W == u64 when NBITS == 64.
+@@ -696,6 +679,21 @@ impl<W: Word, const NWORDS: usize, const A: usize, const B: usize, const C: usiz
+             let result: &Self = unsafe { std::mem::transmute(&tmp) };
+             return *result;
+         }
++        #[cfg(all(feature = "clmul", target_arch = "aarch64"))]
++        if W::NBITS == 64
++            && std::arch::is_aarch64_feature_detected!("neon")
++            && std::arch::is_aarch64_feature_detected!("aes")
++        {
++            // Safety: W == u64 when NBITS == 64.
++            let x: &GF2n<u64, NWORDS, A, B, C> = unsafe { std::mem::transmute(&self) };
++            // Safety: W == u64 when NBITS == 64.
++            let y: &GF2n<u64, NWORDS, A, B, C> = unsafe { std::mem::transmute(other) };
++            // Safety: target_feature's "neon" and "aes" are available in this block.
++            let tmp: GF2n<u64, NWORDS, A, B, C> = unsafe { mul_clmul_u64(x, y) };
++            // Safety: W == u64 when NBITS == 64.
++            let result: &Self = unsafe { std::mem::transmute(&tmp) };
++            return *result;
++        }
+         self.mul_as_add(other)
+     }
+ }

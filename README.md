@@ -6,7 +6,8 @@ Additionally, this Rust library demonstrates detecting support for SIMD instruct
 You can find more information in the following blog posts:
 
 - [Compiling Rust libraries for Android apps: a deep dive](https://gendignoux.com/blog/2022/10/24/rust-library-android.html),
-- [Detecting SIMD support on ARM with Android (and patching the Rust compiler for it)](https://gendignoux.com/blog/2022/11/09/rust-simd-detect-arm-android.md).
+- [Detecting SIMD support on ARM with Android (and patching the Rust compiler for it)](https://gendignoux.com/blog/2022/11/09/rust-simd-detect-arm-android.md),
+- [Testing SIMD instructions on ARM with Rust on Android](https://gendignoux.com/blog/2023/01/05/rust-arm-simd-android.html).
 
 ## Usage
 
@@ -15,6 +16,8 @@ To build a Docker container containing all the build tools and the demo applicat
 ```bash
 $ sudo ./docker-build.sh
 ```
+
+### Building and running the demo Android application
 
 You can then launch this Docker container to build the application.
 This comes in various configurations:
@@ -35,6 +38,7 @@ You can build various flavors of the Rust library.
 - `script-rust-nightly-nostrip.sh`: same, but without stripping debug symbols.
 - `script-rust-stage1.sh` and `script-rust-stage1-nostrip.sh`: using a locally built `stage1` Rust compiler (see below).
 - `script-rust-default.sh` and `script-rust-default-nostrip.sh`: using the default Rust toolchain (stable).
+- `script-relinked.sh`: more advanced library, which bundles another library linked twice (see the corresponding [blog post](https://gendignoux.com/blog/2023/01/05/rust-arm-simd-android.html#mixing-dynamic-and-static-detection-re-linking-a-dependency)).
 
 Then, multiple ways are provided to build the Java part of the Android app.
 
@@ -44,7 +48,7 @@ Then, multiple ways are provided to build the Java part of the Android app.
 
 You can then spawn an Android emulator with `emulator.sh`, and use the `launch-app-debug.sh` or `launch-app-release.sh` scripts to install+launch the application via ADB to either the emulator or a real device connected via USB.
 
-## Building and using a patched Rust compiler
+### Building and using a patched Rust compiler
 
 This repository also shows how to patch and build the Rust compiler.
 You can launch the Docker container in various scenarios:
@@ -65,3 +69,14 @@ You'll also find the following tool to generate a flame graph of the disk space 
 
 - `tools/flamedisk`: small Rust tool to generate an input suitable for `flamegraph.pl`,
 - `scripts/flamedisk.sh`: driver script to generate the flame graph.
+
+### Running unit tests and benchmarks on an Android device
+
+This repository shows how to run Rust unit tests and benchmarks directly on an attached Android device (physical device via USB or emulator), without using a full Android application.
+The `android-runner.sh` script tells Cargo how to do that.
+
+Within the Docker container, you can run the following benchmarks:
+
+- `bench.sh`: demo application, located in `src/android-simd`,
+- `bench-haraka.sh`: my implementation of the Haraka hash function (https://github.com/gendx/haraka-rs),
+- `bench-horcrux.sh`: my implementation of Shamir's Secret Sharing (https://github.com/gendx/horcrux).

@@ -12,5 +12,7 @@ jobs:
           components: rustfmt
       - name: Check Rust formatting (android-simd)
         run: cargo fmt --verbose --manifest-path src/android-simd/Cargo.toml -- --check
+      - name: Check Rust formatting (relinked)
+        run: cargo fmt --verbose --manifest-path src/relinked/Cargo.toml -- --check
       - name: Check Rust formatting (flamedisk)
         run: cargo fmt --verbose --manifest-path tools/flamedisk/Cargo.toml -- --check

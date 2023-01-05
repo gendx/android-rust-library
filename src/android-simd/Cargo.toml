@@ -3,6 +3,10 @@ name = "simd"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = []
+relink = []
+
 [target.'cfg(target_os="android")'.dependencies]
 jni = { version = "0.20", default-features = false }
 libc = "0.2.137"
@@ -16,3 +20,12 @@ crate-type = ["dylib"]
 codegen-units = 1
 lto = true
 panic = "abort"
+
+# LTO triggers linker errors in benchmarks ("duplicate symbol: rust_eh_personality")
+[profile.bench]
+lto = false
+
+# LTO triggers linker errors in tests ("duplicate symbol: rust_eh_personality")
+[profile.release-nolto]
+inherits = "release"
+lto = false

@@ -1,0 +1,18 @@
+[package]
+name = "relinked"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["staticlib"]
+
+[profile.release]
+codegen-units = 1
+panic = "abort"
+
+[features]
+default = ["clmul"]
+clmul = ["horcrux/clmul"]
+
+[dependencies]
+horcrux = { git = "https://github.com/gendx/horcrux", rev = "0ca24ee3353c70dc7ea11a299826bdfc0f4eb173", default-features = false, features = ["parse"] }

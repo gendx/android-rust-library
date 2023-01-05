@@ -14,6 +14,7 @@ docker run \
     --tmpfs /home/dev/build:exec,size=512m \
     --tmpfs /home/dev/.gradle:exec,size=512m \
     --tmpfs /home/dev/.android:size=1m \
-    --tmpfs /home/dev/.cargo/registry:size=16m \
+    --tmpfs /home/dev/.cargo/registry:size=32m \
+    --tmpfs /home/dev/.cargo/git:size=1m \
     --tmpfs /home/dev/.rustup/toolchains:exec,size=1m \
     android-rust-simd

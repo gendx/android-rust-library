@@ -1,4 +1,6 @@
 .git
+.github
 LICENSE
 *.md
 docker-*.sh
+rustc-build

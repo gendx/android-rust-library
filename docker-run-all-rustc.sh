@@ -22,6 +22,7 @@ docker run \
     --tmpfs /home/dev/.gradle:exec,size=512m \
     --tmpfs /home/dev/.android:size=3g \
     --tmpfs /home/dev/.cargo/registry:size=512m \
+    --tmpfs /home/dev/.cargo/git:size=1m \
     --tmpfs /home/dev/.rustup/toolchains:exec,size=1m \
     --volume /tmp/.X11-unix:/tmp/.X11-unix \
     --volume ${PWD}/rustc-build:/home/dev/rustc-build \

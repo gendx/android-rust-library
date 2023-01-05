@@ -18,6 +18,7 @@ docker run \
     --env USER=dev \
     --tmpfs /tmp:size=256m \
     --tmpfs /home/dev/.cargo/registry:size=512m \
+    --tmpfs /home/dev/.cargo/git:size=1m \
     --tmpfs /home/dev/.rustup/toolchains:exec,size=1m \
     --volume $PWD/rustc-build:/home/dev/rustc-build \
     android-rust-simd

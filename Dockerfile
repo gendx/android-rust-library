@@ -132,6 +132,7 @@ USER root
 
 COPY \
     scripts/build-application.sh \
+    scripts/build-application-relinked.sh \
     scripts/build-application-stage1.sh \
     scripts/setup.sh \
     scripts/clone-rustlang-head.sh \
@@ -153,9 +154,16 @@ COPY \
     scripts/launch-app-debug.sh \
     scripts/launch-app-release.sh \
     scripts/flamedisk.sh \
+    scripts/android-runner.sh \
+    scripts/build-relinked.sh \
+    scripts/script-relinked.sh \
+    scripts/bench.sh \
+    scripts/bench-haraka.sh \
+    scripts/bench-horcrux.sh \
     /home/dev/
 RUN chmod 555 \
     /home/dev/build-application.sh \
+    /home/dev/build-application-relinked.sh \
     /home/dev/build-application-stage1.sh \
     /home/dev/setup.sh \
     /home/dev/clone-rustlang-head.sh \
@@ -176,11 +184,20 @@ RUN chmod 555 \
     /home/dev/emulator.sh \
     /home/dev/launch-app-debug.sh \
     /home/dev/launch-app-release.sh \
-    /home/dev/flamedisk.sh
+    /home/dev/flamedisk.sh \
+    /home/dev/android-runner.sh \
+    /home/dev/build-relinked.sh \
+    /home/dev/script-relinked.sh \
+    /home/dev/bench.sh \
+    /home/dev/bench-haraka.sh \
+    /home/dev/bench-horcrux.sh
 
 COPY --chown=1000:1000 cargo-config.toml /home/dev/.cargo/config
-COPY --chown=1000:1000 rustbuild-config.toml /home/dev/
-COPY --chown=1000:1000 stdarch.patch /home/dev/
+COPY --chown=1000:1000 \
+    rustbuild-config.toml \
+    stdarch.patch \
+    horcrux.dynamic_detect.patch \
+    /home/dev/
 
 COPY --chown=1000:1000 src /home/dev/src
 COPY --chown=1000:1000 tools /home/dev/tools
