@@ -85,7 +85,7 @@ RUN cd ${HOME}/opt/android-sdk/ndk/22.1.7171670/toolchains/llvm/prebuilt/linux-x
 #
 # See https://developer.android.com/studio/releases/emulator#31-3-12.
 RUN rm -R ${ANDROID_HOME}/emulator \
-    && wget -nv https://redirector.gvt1.com/edgedl/android/repository/emulator-linux_x64-9058569.zip \
+    && wget -nv https://dl.google.com/android/repository/emulator-linux_x64-9058569.zip \
         -O ${HOME}/emulator-linux_x64-9058569.zip \
     && sha256sum emulator-linux_x64-9058569.zip \
     && echo "5b06dae2b8c79b0a39456c3b4d31cf1895571bbf9763cc8ba84c8fdae15673e8 emulator-linux_x64-9058569.zip" | sha256sum -c - \
