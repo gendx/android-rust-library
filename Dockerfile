@@ -66,13 +66,13 @@ RUN yes | sdkmanager --licenses \
     && sdkmanager --list \
     && sdkmanager --verbose \
         "build-tools;30.0.3" \
-        "ndk;22.1.7171670" \
+        "ndk;25.1.8937393" \
         "platforms;android-33" \
         "system-images;android-29;default;x86_64" \
     && rm -R ${HOME}/.android/
 RUN sdkmanager --list_installed
 
-RUN cd ${HOME}/opt/android-sdk/ndk/22.1.7171670/toolchains/llvm/prebuilt/linux-x86_64/bin/ \
+RUN cd ${HOME}/opt/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/ \
     && ln -s aarch64-linux-android30-clang aarch64-linux-android-clang \
     && ln -s armv7a-linux-androideabi30-clang arm-linux-androideabi-clang \
     && ln -s i686-linux-android30-clang i686-linux-android-clang \
@@ -104,7 +104,7 @@ RUN avdmanager create avd \
     && mv ${HOME}/.android ${HOME}/android
 
 # Install Rust toolchain.
-ENV NDK_HOME=${ANDROID_HOME}/ndk/22.1.7171670
+ENV NDK_HOME=${ANDROID_HOME}/ndk/25.1.8937393
 
 RUN wget -nv https://sh.rustup.rs -O rustup.sh \
     && sha256sum rustup.sh \

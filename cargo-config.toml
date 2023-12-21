@@ -1,15 +1,15 @@
 [target.aarch64-linux-android]
-linker = "/home/dev/opt/android-sdk/ndk/22.1.7171670/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android30-clang"
+linker = "/home/dev/opt/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android30-clang"
 runner = "/home/dev/android-runner.sh"
 
 [target.armv7-linux-androideabi]
-linker = "/home/dev/opt/android-sdk/ndk/22.1.7171670/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi30-clang"
+linker = "/home/dev/opt/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi30-clang"
 runner = "/home/dev/android-runner.sh"
 
 [target.i686-linux-android]
-linker = "/home/dev/opt/android-sdk/ndk/22.1.7171670/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android30-clang"
+linker = "/home/dev/opt/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android30-clang"
 runner = "/home/dev/android-runner.sh"
 
 [target.x86_64-linux-android]
-linker = "/home/dev/opt/android-sdk/ndk/22.1.7171670/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang"
+linker = "/home/dev/opt/android-sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang"
 runner = "/home/dev/android-runner.sh"
