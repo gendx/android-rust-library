@@ -6,7 +6,7 @@ Additionally, this Rust library demonstrates detecting support for SIMD instruct
 You can find more information in the following blog posts:
 
 - [Compiling Rust libraries for Android apps: a deep dive](https://gendignoux.com/blog/2022/10/24/rust-library-android.html),
-- [Detecting SIMD support on ARM with Android (and patching the Rust compiler for it)](https://gendignoux.com/blog/2022/11/09/rust-simd-detect-arm-android.md),
+- [Detecting SIMD support on ARM with Android (and patching the Rust compiler for it)](https://gendignoux.com/blog/2022/11/09/rust-simd-detect-arm-android.html),
 - [Testing SIMD instructions on ARM with Rust on Android](https://gendignoux.com/blog/2023/01/05/rust-arm-simd-android.html).
 
 ## Usage
