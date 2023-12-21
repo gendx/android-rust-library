@@ -48,7 +48,9 @@ fn parse_cpuinfo_features() -> io::Result<HashSet<String>> {
     for line in reader.lines() {
         let line = line?;
         let mut tokens = line.split_whitespace();
-        if let Some(header) = tokens.next() && header == EXPECTED_HEADER {
+        if let Some(header) = tokens.next()
+            && header == EXPECTED_HEADER
+        {
             for token in tokens {
                 if token != ":" {
                     result.insert(token.to_owned());
