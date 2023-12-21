@@ -108,7 +108,7 @@ ENV NDK_HOME=${ANDROID_HOME}/ndk/22.1.7171670
 
 RUN wget -nv https://sh.rustup.rs -O rustup.sh \
     && sha256sum rustup.sh \
-    && echo "173f4881e2de99ba9ad1acb59e65be01b2a44979d83b6ec648d0d22f8654cbce  rustup.sh" | sha256sum -c - \
+    && echo "be3535b3033ff5e0ecc4d589a35d3656f681332f860c5fd6684859970165ddcc  rustup.sh" | sha256sum -c - \
     && sh rustup.sh -y \
     && rm rustup.sh \
     && rm .profile \
