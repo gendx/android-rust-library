@@ -261,7 +261,7 @@ pub fn print_cpu_features<L: Logger>(logger: &L) -> Result<(), L::E> {
     );
 
     #[cfg(target_arch = "arm")]
-    print_arm_features!(logger, "aes", "crc", "crypto", "i8mm", "neon", "pmull", "sha2",);
+    print_arm_features!(logger, "aes", "crc", "i8mm", "neon", "pmull", "sha2",);
 
     #[cfg(target_arch = "aarch64")]
     print_aarch64_features!(
